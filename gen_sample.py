@@ -21,24 +21,21 @@ try:
 except:
     pass
 
-model_name = sys.argv[-1]
-
-# model_name = "bigscience/bloom-560m"
-# model = AutoModelForCausalLM.from_pretrained(
-#     model_name,
-#     load_in_8bit=True,
-#     torch_dtype=torch.float16,
-#     device_map={"": device},    
-# )
-
-model = PeftModel.from_pretrained(
-    model_name,
-    device_map={"": device},
-    torch_dtype=torch.float16,   
-)
-
+base_model_name = "bigscience/bloom-560m"
 tokenizer = AutoTokenizer.from_pretrained(
-    model_name,add_eos_token=True
+    base_model_name, add_eos_token=True
+)
+model = AutoModelForCausalLM.from_pretrained(
+    base_model_name,
+    load_in_8bit=True,
+    torch_dtype=torch.float16,
+    device_map="auto",
+)
+model_name = sys.argv[-1]
+model = PeftModel.from_pretrained(
+    model,
+    model_name,
+    torch_dtype=torch.float16,   
 )
 
 
