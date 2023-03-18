@@ -11,6 +11,7 @@ assert (
     "LlamaTokenizer" in transformers._import_structure["models.llama"]
 ), "LLaMA is now in HuggingFace's main branch.\nPlease reinstall it: pip uninstall transformers && pip install git+https://github.com/huggingface/transformers.git"
 from transformers import LlamaForCausalLM, LlamaTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import (
     prepare_model_for_int8_training,
     LoraConfig,
@@ -46,15 +47,25 @@ if ddp:
     GRADIENT_ACCUMULATION_STEPS = GRADIENT_ACCUMULATION_STEPS // world_size
 
 # model_name = "decapoda-research/llama-7b-hf"
+# model = LlamaForCausalLM.from_pretrained(
+#     model_name,
+#     load_in_8bit=True,
+#     device_map=device_map,
+# )
+# tokenizer = LlamaTokenizer.from_pretrained(
+#     model_name,add_eos_token=True    
+# )
+
 model_name = "bigscience/bloom-1b1"
-model = LlamaForCausalLM.from_pretrained(
+model = AutoModelForCausalLM(
     model_name,
     load_in_8bit=True,
     device_map=device_map,
 )
-tokenizer = LlamaTokenizer.from_pretrained(
-    model_name,add_eos_token=True    
+tokenizer = AutoTokenizer.from_pretrained(
+    model_name,add_eos_token=True
 )
+
 
 model = prepare_model_for_int8_training(model)
 
