@@ -37,6 +37,15 @@ TARGET_MODULES = [
     "q_proj",
     "v_proj",
 ]
+# opt
+TARGET_MODULES = [
+    "query_key_value",
+]
+# bloom
+TARGET_MODULES = [
+    "query_key_value",    
+]
+
 DATA_PATH = "alpaca_data_cleaned.json"
 
 device_map = "auto"
@@ -56,12 +65,16 @@ if ddp:
 #     model_name,add_eos_token=True    
 # )
 
-model_name = "bigscience/bloom-1b1"
+# model_name = "bigscience/bloom-1b1"
+model_name = "bigscience/bloom-560m"
+# model_name = "facebook/opt-6.7b"
+# model_name = "facebook/opt-350m"
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
     load_in_8bit=True,
     device_map=device_map,
 )
+
 tokenizer = AutoTokenizer.from_pretrained(
     model_name,add_eos_token=True
 )
