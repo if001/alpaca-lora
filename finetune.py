@@ -45,13 +45,15 @@ if ddp:
     device_map = {'':int(os.environ.get('LOCAL_RANK') or 0)}
     GRADIENT_ACCUMULATION_STEPS = GRADIENT_ACCUMULATION_STEPS // world_size
 
+# model_name = "decapoda-research/llama-7b-hf"
+model_name = "bigscience/bloom-1b1"
 model = LlamaForCausalLM.from_pretrained(
-    "decapoda-research/llama-7b-hf",
+    model_name,
     load_in_8bit=True,
     device_map=device_map,
 )
 tokenizer = LlamaTokenizer.from_pretrained(
-    "decapoda-research/llama-7b-hf", add_eos_token=True
+    model_name,add_eos_token=True    
 )
 
 model = prepare_model_for_int8_training(model)
