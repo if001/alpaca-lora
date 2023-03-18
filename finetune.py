@@ -57,7 +57,7 @@ if ddp:
 # )
 
 model_name = "bigscience/bloom-1b1"
-model = AutoModelForCausalLM(
+model = AutoModelForCausalLM.from_pretrained(
     model_name,
     load_in_8bit=True,
     device_map=device_map,
