@@ -19,7 +19,7 @@ from peft import (
     get_peft_model_state_dict,
 )
 
-
+OUTPUT_DIR="/content/drive/MyDrive/models/alpaca-lora-test"
 # optimized for RTX 4090. for larger GPUs, increase some of these?
 # MICRO_BATCH_SIZE = 4  # this could actually be 5 but i like powers of 2
 MICRO_BATCH_SIZE = 2  # this could actually be 5 but i like powers of 2
@@ -158,7 +158,7 @@ trainer = transformers.Trainer(
         save_strategy="steps",
         eval_steps=200,
         save_steps=200,
-        output_dir="lora-alpaca",
+        output_dir=OUTPUT_DIR,
         save_total_limit=3,
         load_best_model_at_end=True,
         ddp_find_unused_parameters=False if ddp else None,
