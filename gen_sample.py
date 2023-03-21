@@ -94,8 +94,7 @@ def evaluate(
     return output.split("### Response:")[1].strip()
 
 if __name__ == "__main__":
-    # testing code for readme
-    for instruction in [
+    texts = [
         "Tell me about alpacas.",
         "Tell me about the president of Mexico in 2019.",
         "Tell me about the king of France in 2019.",
@@ -105,7 +104,15 @@ if __name__ == "__main__":
         "Tell me five words that rhyme with 'shock'.",
         "Translate the sentence 'I have no mouth but I must scream' into Spanish.",
         "Count up from 1 to 500.",
-    ]:
+    ]
+    texts = [
+        "alpacaについて教えてください",
+        "2019年のメキシコの大統領を教えてください",
+    ]
+
+    # testing code for readme
+    for instruction in texts:
         print("Instruction:", instruction)
         print("Response:", evaluate(instruction))
         print()
+    
