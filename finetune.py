@@ -135,6 +135,31 @@ def generate_prompt(data_point):
 ### Response:
 {data_point["output"]}"""
 
+def generate_prompt_ja(data_point):
+    # sorry about the formatting disaster gotta move fast
+    if data_point["input"]:
+        return f"""以下は、タスクを説明する命令と、さらなるコンテキストを提供する入力の組み合わせです。要求を適切に満たすような応答を書きなさい。
+
+### 命令:
+{data_point["instruction"]}
+
+### 入力:
+{data_point["input"]}
+
+### 応答:
+{data_point["output"]}"""
+    else:
+        return f"""以下は、ある作業を記述した指示です。要求を適切に満たすような応答を書きなさい。
+
+### 入力:
+{data_point["instruction"]}
+
+### 応答:
+{data_point["output"]}"""
+
+
+
+
 
 def tokenize(prompt):
     # there's probably a way to do this with the tokenizer settings

@@ -58,6 +58,25 @@ def generate_prompt(instruction, input=None):
 
 ### Response:"""
 
+def generate_prompt_ja(instruction, input=None):
+    if input:
+        return f"""以下は、タスクを説明する命令と、さらなるコンテキストを提供する入力の組み合わせです。要求を適切に満たすような応答を書きなさい。
+
+### 命令:
+{instruction}
+
+### 入力:
+{input}
+
+### 応答:"""
+    else:
+        return f"""以下は、ある作業を記述した指示です。要求を適切に満たすような応答を書きなさい。
+
+### 命令:
+{instruction}
+
+### 応答:"""
+
 
 model.eval()
 
@@ -91,7 +110,8 @@ def evaluate(
         )
     s = generation_output.sequences[0]
     output = tokenizer.decode(s)
-    return output.split("### Response:")[1].strip()
+    # return output.split("### Response:")[1].strip()
+    return output.split("### 応答:")[1].strip()
 
 if __name__ == "__main__":
     texts = [
