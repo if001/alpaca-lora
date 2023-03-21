@@ -1,3 +1,11 @@
+'''
+memo
+
+
+モデルごとにどのtarget_moduleセットするか
+
+https://github.com/huggingface/peft/blob/13e53fc7ee5d89d59b16523051006dddf0fb7a49/src/peft/mapping.py#L41
+'''
 import os
 
 # os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -20,9 +28,12 @@ from peft import (
 )
 
 OUTPUT_DIR="/content/drive/MyDrive/models/alpaca-lora-test"
+SAVE_PRE_TRAINED_DIR = "/content/drive/MyDrive/models/alpaca-lora-test/bloom-lora-ja"
+
 # optimized for RTX 4090. for larger GPUs, increase some of these?
-# MICRO_BATCH_SIZE = 4  # this could actually be 5 but i like powers of 2
-MICRO_BATCH_SIZE = 2  # this could actually be 5 but i like powers of 2
+MICRO_BATCH_SIZE = 4  # this could actually be 5 but i like powers of 2
+# MICRO_BATCH_SIZE = 2  # this could actually be 5 but i like powers of 2
+
 # BATCH_SIZE = 128
 BATCH_SIZE = 128
 GRADIENT_ACCUMULATION_STEPS = BATCH_SIZE // MICRO_BATCH_SIZE
@@ -45,7 +56,8 @@ TARGET_MODULES = [
     "query_key_value",    
 ]
 
-DATA_PATH = "alpaca_data_cleaned.json"
+# DATA_PATH = "alpaca_data_cleaned.json"
+DATA_PATH = 'alpaca_data_ja.json'
 
 device_map = "auto"
 world_size = int(os.environ.get('WORLD_SIZE', 1))
@@ -174,6 +186,6 @@ model.state_dict = (
 
 trainer.train()
 
-model.save_pretrained("lora-alpaca")
+model.save_pretrained(SAVE_PRE_TRAINED_DIR)
 
 print("\n If there's a warning about missing keys above, please disregard :)")
