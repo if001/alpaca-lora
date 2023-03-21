@@ -76,8 +76,8 @@ if ddp:
 #     model_name,add_eos_token=True    
 # )
 
-# model_name = "bigscience/bloom-1b1"
-model_name = "bigscience/bloom-560m"
+model_name = "bigscience/bloom-1b1"
+# model_name = "bigscience/bloom-560m"
 # model_name = "facebook/opt-6.7b"
 # model_name = "facebook/opt-350m"
 # model_name = "facebook/opt-1.3b"

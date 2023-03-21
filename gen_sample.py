@@ -21,7 +21,9 @@ try:
 except:
     pass
 
-base_model_name = "bigscience/bloom-560m"
+# base_model_name = "bigscience/bloom-560m"
+base_model_name = "bigscience/bloom-1b1"
+
 tokenizer = AutoTokenizer.from_pretrained(
     base_model_name, add_eos_token=True
 )
