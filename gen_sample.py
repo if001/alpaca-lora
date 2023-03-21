@@ -92,7 +92,7 @@ def evaluate(
         num_beams=4,
         **kwargs,
 ):
-    prompt = generate_prompt(instruction, input)
+    prompt = generate_prompt_ja(instruction, input)
     inputs = tokenizer(prompt, return_tensors="pt")
     input_ids = inputs["input_ids"].to(device)
     generation_config = GenerationConfig(

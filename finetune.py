@@ -176,8 +176,8 @@ def tokenize(prompt):
     }
 
 
-train_data = train_data.shuffle().map(lambda x: tokenize(generate_prompt(x)))
-val_data = val_data.shuffle().map(lambda x: tokenize(generate_prompt(x)))
+train_data = train_data.shuffle().map(lambda x: tokenize(generate_prompt_ja(x)))
+val_data = val_data.shuffle().map(lambda x: tokenize(generate_prompt_ja(x)))
 
 trainer = transformers.Trainer(
     model=model,
