@@ -97,7 +97,9 @@ def train(
         base_model,
         load_in_8bit=True,
         device_map=device_map,
-        quantization_config=quantization_config
+        quantization_config=quantization_config,
+        offload_folder="offload",
+        offload_state_dict = True,
     )
 
     tokenizer = LlamaTokenizer.from_pretrained(base_model)
