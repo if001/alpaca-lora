@@ -89,7 +89,7 @@ def main(
         max_new_tokens=128,
         **kwargs,
     ):
-        prompt = generate_prompt(instruction, input)
+        prompt = generate_prompt_ja(instruction, input)
         inputs = tokenizer(prompt, return_tensors="pt")
         input_ids = inputs["input_ids"].to(device)
         generation_config = GenerationConfig(
@@ -136,7 +136,7 @@ def main(
         ],
         title="🦙🌲 Alpaca-LoRA",
         description="Alpaca-LoRA is a 7B-parameter LLaMA model finetuned to follow instructions. It is trained on the [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca) dataset and makes use of the Huggingface LLaMA implementation. For more information, please visit [the project's website](https://github.com/tloen/alpaca-lora).",
-    ).launch()
+    ).launch(share=True)
     # Old testing code follows.
 
     """
@@ -178,6 +178,25 @@ def generate_prompt(instruction, input=None):
 
 ### Response:
 """
+
+def generate_prompt_ja(instruction, input=None):
+    if input:
+        return f"""以下は、タスクを説明する命令と、さらなるコンテキストを提供する入力の組み合わせです。要求を適切に満たすような応答を書きなさい。
+
+### 命令:
+{instruction}
+
+### 入力:
+{input}
+
+### 応答:"""
+    else:
+        return f"""以下は、ある作業を記述した指示です。要求を適切に満たすような応答を書きなさい。
+
+### 命令:
+{instruction}
+
+### 応答:"""
 
 
 if __name__ == "__main__":
