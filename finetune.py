@@ -22,6 +22,8 @@ assert (
 ), "LLaMA is now in HuggingFace's main branch.\nPlease reinstall it: pip uninstall transformers && pip install git+https://github.com/huggingface/transformers.git"
 from transformers import LlamaForCausalLM, LlamaTokenizer
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import BitsAndBytesConfig
+
 from peft import (
     prepare_model_for_int8_training,
     LoraConfig,
@@ -86,10 +88,16 @@ def train(
         device_map = {"": int(os.environ.get("LOCAL_RANK") or 0)}
         gradient_accumulation_steps = gradient_accumulation_steps // world_size
 
+ 
+    quantization_config = BitsAndBytesConfig(
+       llm_int8_enable_fp32_cpu_offload = True,
+    )
+
     model = LlamaForCausalLM.from_pretrained(
         base_model,
         load_in_8bit=True,
         device_map=device_map,
+        quantization_config=quantization_config
     )
 
     tokenizer = LlamaTokenizer.from_pretrained(base_model)
