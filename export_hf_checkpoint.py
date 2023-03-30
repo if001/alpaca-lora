@@ -1,20 +1,25 @@
 import os
-import json
-
+import sys
 import torch
-from peft import PeftModel, LoraConfig
-
 import transformers
+from peft import PeftModel
+from transformers import LlamaForCausalLM, LlamaTokenizer  # noqa: F402
 
-assert (
-    "LlamaTokenizer" in transformers._import_structure["models.llama"]
-), "LLaMA is now in HuggingFace's main branch.\nPlease reinstall it: pip uninstall transformers && pip install git+https://github.com/huggingface/transformers.git"
-from transformers import LlamaTokenizer, LlamaForCausalLM
+# BASE_MODEL = os.environ.get("BASE_MODEL", None)
+# assert (
+#     BASE_MODEL
+# ), "Please specify a value for BASE_MODEL environment variable, e.g. `export BASE_MODEL=decapoda-research/llama-7b-hf`"  # noqa: E501
 
-BASE_MODEL = None
-assert (
-    BASE_MODEL
-), "Please specify a BASE_MODEL in the script, e.g. 'decapoda-research/llama-7b-hf'"
+"""
+python export_hf_checkpoint.py \
+"decapoda-research/llama-7b-hf"
+"/content/drive/MyDrive/models/alpaca_lora_ja_7b"
+"/content/drive/MyDrive/models/alpaca_lora_ja_7b/hf_ckpt"
+"""
+
+BASE_MODEL=sys.argv[1]
+LOAD_MODEL=sys.argv[2]
+SAVE_DIR=sys.argv[3]
 
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 
@@ -30,12 +35,14 @@ first_weight_old = first_weight.clone()
 
 lora_model = PeftModel.from_pretrained(
     base_model,
-    "tloen/alpaca-lora-7b",
+    LOAD_MODEL,
     device_map={"": "cpu"},
     torch_dtype=torch.float16,
 )
 
-lora_weight = lora_model.base_model.model.model.layers[0].self_attn.q_proj.weight
+lora_weight = lora_model.base_model.model.model.layers[
+    0
+].self_attn.q_proj.weight
 
 assert torch.allclose(first_weight_old, first_weight)
 
@@ -57,5 +64,5 @@ deloreanized_sd = {
 }
 
 LlamaForCausalLM.save_pretrained(
-    base_model, "./hf_ckpt", state_dict=deloreanized_sd, max_shard_size="400MB"
+    base_model, SAVE_DIR, state_dict=deloreanized_sd, max_shard_size="400MB"
 )

@@ -12,3 +12,5 @@ evaluate.py
 test_data.json
 todo.txt
 .alpaca-lora
+.vscode/
+
