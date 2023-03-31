@@ -29,6 +29,7 @@ print(f"save dir: {SAVE_DIR}")
 
 
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
+tokenizer.save_model(SAVE_DIR)
 
 # device_map = {"": "cpu"}
 device_map = "auto"
