@@ -12,8 +12,8 @@ from transformers import LlamaForCausalLM, LlamaTokenizer  # noqa: F402
 
 """
 python export_hf_checkpoint.py \
-"decapoda-research/llama-7b-hf"
-"/content/drive/MyDrive/models/alpaca_lora_ja_7b"
+"decapoda-research/llama-7b-hf" \
+"/content/drive/MyDrive/models/alpaca_lora_ja_7b" \
 "/content/drive/MyDrive/models/alpaca_lora_ja_7b/hf_ckpt"
 """
 
