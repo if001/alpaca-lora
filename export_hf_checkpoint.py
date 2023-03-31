@@ -38,13 +38,14 @@ print("load model...")
 device_map = {"": "cpu"}
 # device_map = "auto"
 
+# offload_dir='./tmp',
 base_model = LlamaForCausalLM.from_pretrained(
     BASE_MODEL,
     low_cpu_mem_usage=True,
     torch_dtype=torch.float16,
-    device_map=device_map,
+    device_map=device_map,    
+    load_in_8bit=True,
 )
-
 
 first_weight = base_model.model.layers[0].self_attn.q_proj.weight
 first_weight_old = first_weight.clone()
@@ -53,7 +54,8 @@ lora_model = PeftModel.from_pretrained(
     base_model,
     LOAD_MODEL,
     device_map=device_map,
-    torch_dtype=torch.float16,    
+    torch_dtype=torch.float16,
+    load_in_8bit=True,
 )
 
 lora_weight = lora_model.base_model.model.model.layers[
