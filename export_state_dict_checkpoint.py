@@ -1,15 +1,32 @@
 import json
 import os
+import sys
 
 import torch
 import transformers
 from peft import PeftModel
 from transformers import LlamaForCausalLM, LlamaTokenizer  # noqa: E402
 
-BASE_MODEL = os.environ.get("BASE_MODEL", None)
-assert (
-    BASE_MODEL
-), "Please specify a value for BASE_MODEL environment variable, e.g. `export BASE_MODEL=decapoda-research/llama-7b-hf`"  # noqa: E501
+# BASE_MODEL = os.environ.get("BASE_MODEL", None)
+# assert (
+#     BASE_MODEL
+# ), "Please specify a value for BASE_MODEL environment variable, e.g. `export BASE_MODEL=decapoda-research/llama-7b-hf`"  # noqa: E501
+
+"""
+python export_hf_checkpoint.py \
+"decapoda-research/llama-7b-hf" \
+"/content/drive/MyDrive/models/alpaca_lora_ja_7b" \
+"/content/drive/MyDrive/models/alpaca_lora_ja_7b/hf_ckpt"
+"""
+
+BASE_MODEL=sys.argv[1]
+LOAD_MODEL=sys.argv[2]
+SAVE_DIR=sys.argv[3]
+
+print(f"base model: {BASE_MODEL}")
+print(f"load weight: {LOAD_MODEL}")
+print(f"save dir: {SAVE_DIR}")
+
 
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 
@@ -22,7 +39,7 @@ base_model = LlamaForCausalLM.from_pretrained(
 
 lora_model = PeftModel.from_pretrained(
     base_model,
-    "tloen/alpaca-lora-7b",
+    LOAD_MODEL,
     device_map={"": "cpu"},
     torch_dtype=torch.float16,
 )
