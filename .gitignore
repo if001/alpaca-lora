@@ -14,3 +14,8 @@ todo.txt
 .alpaca-lora
 .vscode/
 
+data_set/
+data_set_tmp/
+
+gomi.py
+gomi.md
