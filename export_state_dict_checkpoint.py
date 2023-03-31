@@ -141,11 +141,16 @@ for k, v in lora_model_sd.items():
         else:
             new_state_dict[new_k] = v
 
-# os.makedirs("./ckpt", exist_ok=True)
-# torch.save(new_state_dict, "./ckpt/consolidated.00.pth")
-
 torch.save(new_state_dict, f"{SAVE_DIR}/consolidated.00.pth")
 print('saved')
 
-with open("./ckpt/params.json", "w") as f:
-    json.dump(params, f)
+
+with open(f"f{SAVE_DIR}/params.json", "w") as f:
+     json.dump(params, f)
+
+# os.makedirs("./ckpt", exist_ok=True)
+# torch.save(new_state_dict, "./ckpt/consolidated.00.pth")
+# with open("./ckpt/params.json", "w") as f:
+#     json.dump(params, f)
+
+
