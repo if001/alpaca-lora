@@ -30,18 +30,25 @@ print(f"save dir: {SAVE_DIR}")
 
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 
+# device_map = {"": "cpu"}
+device_map = "auto"
+offload_folder='./tmp'
+
 base_model = LlamaForCausalLM.from_pretrained(
     BASE_MODEL,
-    load_in_8bit=False,
+    load_in_8bit=True,
     torch_dtype=torch.float16,
-    device_map={"": "cpu"},
+    device_map=device_map,    
+    load_in_8bit=True,
+    offload_folder=offload_folder
 )
 
 lora_model = PeftModel.from_pretrained(
     base_model,
     LOAD_MODEL,
-    device_map={"": "cpu"},
+    device_map=device_map,
     torch_dtype=torch.float16,
+    load_in_8bit=True,
 )
 
 # merge weights

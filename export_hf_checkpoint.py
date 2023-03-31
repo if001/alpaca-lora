@@ -37,13 +37,13 @@ print("load model...")
 
 # device_map = {"": "cpu"}
 device_map = "auto"
+offload_folder='./tmp'
 
-offload_folder='./tmp',
 base_model = LlamaForCausalLM.from_pretrained(
     BASE_MODEL,
     low_cpu_mem_usage=True,
     torch_dtype=torch.float16,
-    device_map=device_map,    
+    device_map=device_map,
     load_in_8bit=True,
     offload_folder=offload_folder
 )
