@@ -145,7 +145,7 @@ torch.save(new_state_dict, f"{SAVE_DIR}/consolidated.00.pth")
 print('saved')
 
 
-with open(f"f{SAVE_DIR}/params.json", "w") as f:
+with open(f"{SAVE_DIR}/params.json", "w") as f:
      json.dump(params, f)
 
 # os.makedirs("./ckpt", exist_ok=True)
