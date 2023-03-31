@@ -21,6 +21,10 @@ BASE_MODEL=sys.argv[1]
 LOAD_MODEL=sys.argv[2]
 SAVE_DIR=sys.argv[3]
 
+print(f"base model: {BASE_MODEL}")
+print(f"load weight: {LOAD_MODEL}")
+print(f"save dir: {SAVE_DIR}")
+
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 
 # base_model = LlamaForCausalLM.from_pretrained(
@@ -29,12 +33,16 @@ tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 #     torch_dtype=torch.float16,
 #     device_map={"": "cpu"},
 # )
+print("load model...")
+
+# device_map = {"": "cpu"}
+device_map = "auto"
+
 base_model = LlamaForCausalLM.from_pretrained(
     BASE_MODEL,
-    load_in_8bit=True,
     low_cpu_mem_usage=True,
     torch_dtype=torch.float16,
-    device_map={"": "cpu"},
+    device_map=device_map,
 )
 
 
@@ -44,8 +52,8 @@ first_weight_old = first_weight.clone()
 lora_model = PeftModel.from_pretrained(
     base_model,
     LOAD_MODEL,
-    device_map={"": "cpu"},
-    torch_dtype=torch.float16,
+    device_map=device_map,    
+    torch_dtype=torch.float16,    
 )
 
 lora_weight = lora_model.base_model.model.model.layers[
