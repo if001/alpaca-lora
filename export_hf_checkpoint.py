@@ -23,12 +23,20 @@ SAVE_DIR=sys.argv[3]
 
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 
+# base_model = LlamaForCausalLM.from_pretrained(
+#     BASE_MODEL,
+#     load_in_8bit=False,
+#     torch_dtype=torch.float16,
+#     device_map={"": "cpu"},
+# )
 base_model = LlamaForCausalLM.from_pretrained(
     BASE_MODEL,
-    load_in_8bit=False,
+    load_in_8bit=True,
+    low_cpu_mem_usage=True,
     torch_dtype=torch.float16,
     device_map={"": "cpu"},
 )
+
 
 first_weight = base_model.model.layers[0].self_attn.q_proj.weight
 first_weight_old = first_weight.clone()
