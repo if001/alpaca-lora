@@ -35,8 +35,8 @@ tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 # )
 print("load model...")
 
-# device_map = {"": "cpu"}
-device_map = "auto"
+device_map = {"": "cpu"}
+# device_map = "auto"
 
 base_model = LlamaForCausalLM.from_pretrained(
     BASE_MODEL,
@@ -52,7 +52,7 @@ first_weight_old = first_weight.clone()
 lora_model = PeftModel.from_pretrained(
     base_model,
     LOAD_MODEL,
-    device_map=device_map,    
+    device_map=device_map,
     torch_dtype=torch.float16,    
 )
 
