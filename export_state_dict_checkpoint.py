@@ -43,7 +43,7 @@ if device == 'cpu':
         low_cpu_mem_usage=True,
         torch_dtype=torch.float16,
         device_map=device_map,
-        load_in_8bit_fp32_cpu_offload=True,
+        load_in_8bit=True,
         offload_folder=offload_folder    
     )
    lora_model = PeftModel.from_pretrained(
@@ -52,7 +52,7 @@ if device == 'cpu':
         low_cpu_mem_usage=True,
         device_map=device_map,
         torch_dtype=torch.float16,
-        load_in_8bit_fp32_cpu_offload=True,        
+        load_in_8bit=True,        
     )
 else:
     device_map = "auto"    

@@ -48,7 +48,7 @@ if device == 'cpu':
         low_cpu_mem_usage=True,
         torch_dtype=torch.float16,
         device_map=device_map,
-        load_in_8bit_fp32_cpu_offload=True,
+        load_in_8bit=True,
         offload_folder=offload_folder    
     )
 else:
@@ -59,7 +59,7 @@ else:
         torch_dtype=torch.float16,
         device_map=device_map,    
         load_in_8bit=True,
-        offload_folder=offload_folder    
+        offload_folder=offload_folder
     )
 
 first_weight = base_model.model.layers[0].self_attn.q_proj.weight
@@ -79,7 +79,7 @@ else:
         LOAD_MODEL,
         device_map=device_map,
         torch_dtype=torch.float16,
-        load_in_8bit_fp32_cpu_offload=True,        
+        load_in_8bit=True,        
     )
 
 lora_weight = lora_model.base_model.model.model.layers[
