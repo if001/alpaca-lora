@@ -35,29 +35,52 @@ tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 # )
 print("load model...")
 
-# device_map = {"": "cpu"}
-device_map = "auto"
-offload_folder='./tmp'
+if torch.cuda.is_available():
+    device = 'cuda:0'
+else:
+    device = 'cpu'
+offload_folder='offload'
 
-base_model = LlamaForCausalLM.from_pretrained(
-    BASE_MODEL,
-    low_cpu_mem_usage=True,
-    torch_dtype=torch.float16,
-    device_map=device_map,
-    load_in_8bit=True,
-    offload_folder=offload_folder
-)
+if device == 'cpu':    
+    device_map = {"": "cpu"}
+    base_model = LlamaForCausalLM.from_pretrained(
+        BASE_MODEL,
+        low_cpu_mem_usage=True,
+        torch_dtype=torch.float16,
+        device_map=device_map,
+        load_in_8bit_fp32_cpu_offload=True,
+        offload_folder=offload_folder    
+    )
+else:
+    device_map = "auto"
+    base_model = LlamaForCausalLM.from_pretrained(
+        BASE_MODEL,
+        low_cpu_mem_usage=True,
+        torch_dtype=torch.float16,
+        device_map=device_map,    
+        load_in_8bit=True,
+        offload_folder=offload_folder    
+    )
 
 first_weight = base_model.model.layers[0].self_attn.q_proj.weight
 first_weight_old = first_weight.clone()
 
-lora_model = PeftModel.from_pretrained(
-    base_model,
-    LOAD_MODEL,
-    device_map=device_map,
-    torch_dtype=torch.float16,
-    load_in_8bit=True,    
-)
+if device == 'cpu':
+    lora_model = PeftModel.from_pretrained(
+        base_model,
+        LOAD_MODEL,
+        device_map=device_map,
+        torch_dtype=torch.float16,
+        load_in_8bit=True,
+    )   
+else:
+    lora_model = PeftModel.from_pretrained(
+        base_model,
+        LOAD_MODEL,
+        device_map=device_map,
+        torch_dtype=torch.float16,
+        load_in_8bit_fp32_cpu_offload=True,        
+    )
 
 lora_weight = lora_model.base_model.model.model.layers[
     0

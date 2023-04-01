@@ -34,12 +34,10 @@ else:
 
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 # tokenizer.save_model(SAVE_DIR)
- 
-# device_map = {"": "cpu"}
-device_map = "auto"
-offload_folder='./tmp'
 
+offload_folder='offload'
 if device == 'cpu':
+   device_map = {"": "cpu"}
    base_model = LlamaForCausalLM.from_pretrained(
         BASE_MODEL,
         low_cpu_mem_usage=True,
@@ -54,19 +52,18 @@ if device == 'cpu':
         low_cpu_mem_usage=True,
         device_map=device_map,
         torch_dtype=torch.float16,
-        load_in_8bit_fp32_cpu_offload=True,
-        offload_folder=offload_folder
+        load_in_8bit_fp32_cpu_offload=True,        
     )
 else:
+    device_map = "auto"    
     base_model = LlamaForCausalLM.from_pretrained(
         BASE_MODEL,
         low_cpu_mem_usage=True,
         torch_dtype=torch.float16,
         device_map=device_map,    
         load_in_8bit=True,
-        offload_folder=offload_folder    
+        offload_folder=offload_folder
     )
-
     lora_model = PeftModel.from_pretrained(
         base_model,
         LOAD_MODEL,
