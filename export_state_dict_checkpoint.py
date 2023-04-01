@@ -27,6 +27,10 @@ print(f"base model: {BASE_MODEL}")
 print(f"load weight: {LOAD_MODEL}")
 print(f"save dir: {SAVE_DIR}")
 
+if torch.cuda.is_available():
+    device = 'cuda:0'
+else:
+    device = 'cpu'
 
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 # tokenizer.save_model(SAVE_DIR)
@@ -35,22 +39,41 @@ tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 device_map = "auto"
 offload_folder='./tmp'
 
-base_model = LlamaForCausalLM.from_pretrained(
-    BASE_MODEL,    
-    low_cpu_mem_usage=True,
-    torch_dtype=torch.float16,
-    device_map=device_map,    
-    load_in_8bit=True,
-    offload_folder=offload_folder
-)
+if device == 'cpu':
+   base_model = LlamaForCausalLM.from_pretrained(
+        BASE_MODEL,
+        low_cpu_mem_usage=True,
+        torch_dtype=torch.float16,
+        device_map=device_map,
+        load_in_8bit_fp32_cpu_offload=True,
+        offload_folder=offload_folder    
+    )
+   lora_model = PeftModel.from_pretrained(
+        base_model,
+        LOAD_MODEL,
+        low_cpu_mem_usage=True,
+        device_map=device_map,
+        torch_dtype=torch.float16,
+        load_in_8bit_fp32_cpu_offload=True,
+        offload_folder=offload_folder
+    )
+else:
+    base_model = LlamaForCausalLM.from_pretrained(
+        BASE_MODEL,
+        low_cpu_mem_usage=True,
+        torch_dtype=torch.float16,
+        device_map=device_map,    
+        load_in_8bit=True,
+        offload_folder=offload_folder    
+    )
 
-lora_model = PeftModel.from_pretrained(
-    base_model,
-    LOAD_MODEL,
-    device_map=device_map,
-    torch_dtype=torch.float16,
-    load_in_8bit=True,
-)
+    lora_model = PeftModel.from_pretrained(
+        base_model,
+        LOAD_MODEL,
+        device_map=device_map,
+        torch_dtype=torch.float16,
+        load_in_8bit=True,
+    )
 
 # merge weights
 for layer in lora_model.base_model.model.model.layers:
