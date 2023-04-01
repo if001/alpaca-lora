@@ -29,10 +29,10 @@ print(f"save dir: {SAVE_DIR}")
 
 
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
-tokenizer.save_model(SAVE_DIR)
-
-# device_map = {"": "cpu"}
-device_map = "auto"
+# tokenizer.save_model(SAVE_DIR)
+ 
+device_map = {"": "cpu"}
+# device_map = "auto"
 offload_folder='./tmp'
 
 base_model = LlamaForCausalLM.from_pretrained(
@@ -142,8 +142,9 @@ for k, v in lora_model_sd.items():
         else:
             new_state_dict[new_k] = v
 
-torch.save(new_state_dict, f"{SAVE_DIR}/consolidated.00.pth")
-print('saved')
+save_pth=f"{SAVE_DIR}/consolidated.00.pth"
+torch.save(new_state_dict, save_pth)
+print(f'saved: {save_pth}')
 
 
 with open(f"{SAVE_DIR}/params.json", "w") as f:
