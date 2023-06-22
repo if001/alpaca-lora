@@ -122,8 +122,15 @@ def train(
         gradient_accumulation_steps = gradient_accumulation_steps // world_size
 
 
+    # quantization_config = BitsAndBytesConfig(
+    #    llm_int8_enable_fp32_cpu_offload = True,
+    # )
+    ## for qlora
     quantization_config = BitsAndBytesConfig(
-       llm_int8_enable_fp32_cpu_offload = True,
+        load_in_4bit=True,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16
     )
 
     # Check if parameter passed or if set within environ
@@ -139,13 +146,13 @@ def train(
         os.environ["WANDB_LOG_MODEL"] = wandb_log_model
 
     model = LlamaForCausalLM.from_pretrained(
-        base_model,
-        load_in_8bit=True,
+        base_model,        
+        #load_in_8bit=True,
         torch_dtype=torch.float16,
         device_map=device_map,
         quantization_config=quantization_config,
-        offload_folder="offload",
-        offload_state_dict = True,
+        #offload_folder="offload",
+        #offload_state_dict = True,
     )
 
     tokenizer = LlamaTokenizer.from_pretrained(base_model)
