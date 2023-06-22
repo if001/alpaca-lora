@@ -25,6 +25,7 @@ print(f"base model: {BASE_MODEL}")
 print(f"load weight: {LOAD_MODEL}")
 print(f"save dir: {SAVE_DIR}")
 
+
 tokenizer = LlamaTokenizer.from_pretrained(BASE_MODEL)
 
 # base_model = LlamaForCausalLM.from_pretrained(
@@ -88,10 +89,8 @@ lora_weight = lora_model.base_model.model.model.layers[
 
 assert torch.allclose(first_weight_old, first_weight)
 
-# merge weights
-for layer in lora_model.base_model.model.model.layers:
-    layer.self_attn.q_proj.merge_weights = True
-    layer.self_attn.v_proj.merge_weights = True
+# merge weights - new merging method from peft
+lora_model = lora_model.merge_and_unload()
 
 lora_model.train(False)
 
