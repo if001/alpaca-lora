@@ -17,6 +17,8 @@ python export_hf_checkpoint.py \
 "/content/drive/MyDrive/models/alpaca_lora_ja_7b/hf_ckpt"
 """
 
+print(sys.argv)
+
 BASE_MODEL=sys.argv[1]
 LOAD_MODEL=sys.argv[2]
 SAVE_DIR=sys.argv[3]
