@@ -25,7 +25,7 @@ import bitsandbytes as bnb
 #     "LlamaTokenizer" in transformers._import_structure["models.llama"]
 # ), "LLaMA is now in HuggingFace's main branch.\nPlease reinstall it: pip uninstall transformers && pip install git+https://github.com/huggingface/transformers.git"
 
-from transformers import LlamaForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers import BitsAndBytesConfig
 
 from peft import (
@@ -145,7 +145,7 @@ def train(
     if len(wandb_log_model) > 0:
         os.environ["WANDB_LOG_MODEL"] = wandb_log_model
 
-    model = LlamaForCausalLM.from_pretrained(
+    model = AutoModelForCausalLM.from_pretrained(
         base_model,        
         #load_in_8bit=True,
         torch_dtype=torch.float16,
@@ -157,9 +157,8 @@ def train(
 
     tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
 
-    tokenizer.pad_token_id = (
-        0  # unk. we want this to be different from the eos token
-    )
+    # tokenizer.pad_token_id = 0  # unk. we want this to be different from the eos token
+    
     tokenizer.padding_side = "left"  # Allow batched inference
 
     def tokenize(prompt, add_eos_token=True):
