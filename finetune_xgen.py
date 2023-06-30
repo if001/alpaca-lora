@@ -158,6 +158,9 @@ def train(
     tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
 
     # tokenizer.pad_token_id = 0  # unk. we want this to be different from the eos token
+    special_tokens_dict = {'pad_token': '<|pad|>'}
+    num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
+    print('We have added', num_added_toks, 'tokens')
     
     tokenizer.padding_side = "left"  # Allow batched inference
 
