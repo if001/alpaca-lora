@@ -193,7 +193,7 @@ def train(
 
     def generate_and_tokenize_prompt(data_point):
         data = []
-        for i in range(len(data_point["conversations"])-1):
+        for i in range(len(data_point["conversations"])):
                 prompt = ""
                 for v in range(data_point["conversations"][:i+1]):                    
                     print(i, v)
