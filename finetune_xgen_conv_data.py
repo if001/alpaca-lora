@@ -252,6 +252,7 @@ def train(
         train_val = data["train"].train_test_split(
             test_size=val_set_size, shuffle=True, seed=42
         )
+        print('train_val', train_val)
         train_data = generate_and_tokenize_prompt(train_val["train"].shuffle())
         print("train_data", train_data[0])
         val_data = generate_and_tokenize_prompt(train_val["test"].shuffle())
