@@ -196,12 +196,10 @@ def train(
         for i in range(len(data_point["conversations"])):                
                 for v in data_point["conversations"][:i+1]:
                     prompt = ""
-                    for v2 in v:
-                        print(i, v2)
+                    for v2 in v:                        
                         prompt += "ユーザー: " + v2["ユーザー1"] + '\n' + "システム: " + v2["ユーザー2"]
                         if i != 0:
-                            prompt += '\n'
-                        print('prompt', prompt)
+                            prompt += '\n'                        
                         tokenized_prompt = tokenize(prompt)
                         data.append(tokenized_prompt)
         return data
@@ -250,9 +248,9 @@ def train(
         train_val = data["train"].train_test_split(
             test_size=val_set_size, shuffle=True, seed=42
         )
-        print('train_val', train_val)
+        # print('train_val', train_val)
         train_data = generate_and_tokenize_prompt(train_val["train"].shuffle())
-        print("train_data", train_data[0])
+        print("train_data", train_data[0], len(train_data))
         val_data = generate_and_tokenize_prompt(train_val["test"].shuffle())
     
     else:
