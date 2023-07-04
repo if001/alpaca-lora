@@ -191,7 +191,19 @@ def train(
 
         return result
 
-    def generate_and_tokenize_prompt(data_point):
+    def generate_and_tokenize_prompt(data_set):
+        train_data = []
+        for data_point in data_set["train"].shuffle():
+            for i in range(len(data_point["conversations"]-1)):
+                prompt = ""
+                for v in data_point["conversations"][:i+1]:
+                    prompt += "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
+                    if i != 0:
+                        prompt += '\n'
+                print('prompt', prompt)
+                tokenized_prompt = tokenize(prompt)
+                train_data.append(tokenized_prompt)
+
         for v in data_point["conversations"]:
             full_prompt = "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
             tokenized_full_prompt = tokenize(full_prompt)
@@ -240,20 +252,10 @@ def train(
         train_val = data["train"].train_test_split(
             test_size=val_set_size, shuffle=True, seed=42
         )
-        train_data = []
-        for data_point in train_val["train"].shuffle():
-            for v in data_point["conversations"]:
-                full_prompt = "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
-                print("full_prompt", full_prompt)
-                tokenized_full_prompt = tokenize(full_prompt)
-                train_data.append(tokenized_full_prompt)
+        train_data = generate_and_tokenize_prompt(train_val["train"].shuffle())
         print("train_data", train_data[0])
-        val_data = []
-        for data_point in train_val["test"].shuffle():
-            for v in data_point["conversations"]:
-                full_prompt = "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
-                tokenized_full_prompt = tokenize(full_prompt)
-                val_data.append(tokenized_full_prompt)
+        val_data = generate_and_tokenize_prompt(train_val["test"].shuffle())
+    
     else:
         train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
         val_data = None
