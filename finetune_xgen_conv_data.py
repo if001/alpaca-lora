@@ -196,10 +196,11 @@ def train(
         for i in range(len(data_point["conversations"])):
                 prompt = ""
                 for v in data_point["conversations"][:i+1]:
-                    print(i, v)
-                    prompt += "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
-                    if i != 0:
-                        prompt += '\n'
+                    for v2 in v:
+                        print(i, v2)
+                        prompt += "ユーザー: " + v2["ユーザー1"] + '\n' + "システム: " + v2["ユーザー2"]
+                        if i != 0:
+                            prompt += '\n'
                 print('prompt', prompt)
                 tokenized_prompt = tokenize(prompt)
                 data.append(tokenized_prompt)
