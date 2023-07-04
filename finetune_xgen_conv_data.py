@@ -196,6 +196,7 @@ def train(
         for i in range(len(data_point["conversations"])-1):
                 prompt = ""
                 for v in data_point["conversations"][:i+1]:
+                    print(i, v)
                     prompt += "ユーザー: " + v[i]["ユーザー1"] + '\n' + "システム: " + v[i]["ユーザー2"]
                     if i != 0:
                         prompt += '\n'
