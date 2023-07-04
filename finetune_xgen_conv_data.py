@@ -244,8 +244,10 @@ def train(
         for data_point in train_val["train"].shuffle():
             for v in data_point["conversations"]:
                 full_prompt = "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
+                print("full_prompt", full_prompt)
                 tokenized_full_prompt = tokenize(full_prompt)
                 train_data.append(tokenized_full_prompt)
+        print("train_data", train_data[0])
         val_data = []
         for data_point in train_val["test"].shuffle():
             for v in data_point["conversations"]:
