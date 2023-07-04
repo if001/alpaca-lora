@@ -192,29 +192,9 @@ def train(
         return result
 
     def generate_and_tokenize_prompt(data_point):
-        full_prompt = prompter.generate_prompt(
-            data_point["instruction"],
-            data_point["input"],
-            data_point["output"],
-        )
-        tokenized_full_prompt = tokenize(full_prompt)
-        if not train_on_inputs:
-            user_prompt = prompter.generate_prompt(
-                data_point["instruction"], data_point["input"]
-            )
-            tokenized_user_prompt = tokenize(
-                user_prompt, add_eos_token=add_eos_token
-            )
-            user_prompt_len = len(tokenized_user_prompt["input_ids"])
-
-            if add_eos_token:
-                user_prompt_len -= 1
-
-            tokenized_full_prompt["labels"] = [
-                -100
-            ] * user_prompt_len + tokenized_full_prompt["labels"][
-                user_prompt_len:
-            ]  # could be sped up, probably
+        for v in data_point["conversations"]:
+            full_prompt = "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
+            tokenized_full_prompt = tokenize(full_prompt)
         return tokenized_full_prompt
 
     model = prepare_model_for_int8_training(model)
@@ -260,12 +240,18 @@ def train(
         train_val = data["train"].train_test_split(
             test_size=val_set_size, shuffle=True, seed=42
         )
-        train_data = (
-            train_val["train"].shuffle().map(generate_and_tokenize_prompt)
-        )
-        val_data = (
-            train_val["test"].shuffle().map(generate_and_tokenize_prompt)
-        )
+        train_data = []
+        for data_point in train_val["train"].shuffle():
+            for v in data_point["conversations"]:
+                full_prompt = "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
+                tokenized_full_prompt = tokenize(full_prompt)
+                train_data.append(tokenized_full_prompt)
+        val_data = []
+        for data_point in train_val["test"].shuffle():
+            for v in data_point["conversations"]:
+                full_prompt = "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
+                tokenized_full_prompt = tokenize(full_prompt)
+                val_data.append(tokenized_full_prompt)
     else:
         train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
         val_data = None
