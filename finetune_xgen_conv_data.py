@@ -193,7 +193,7 @@ def train(
 
     def generate_and_tokenize_prompt(data_point):
         data = []
-        for i in range(len(data_point["conversations"]-1)):
+        for i in range(len(data_point["conversations"])-1):
                 prompt = ""
                 for v in data_point["conversations"][:i+1]:
                     prompt += "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
