@@ -187,7 +187,8 @@ def train(
         ):
             result["input_ids"].append(tokenizer.eos_token_id)
             result["attention_mask"].append(1)
-
+        print('result["input_ids"]', result["input_ids"])
+        exit(0)
         result["labels"] = result["input_ids"].copy()
 
         return result
