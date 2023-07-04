@@ -191,10 +191,9 @@ def train(
 
         return result
 
-    def generate_and_tokenize_prompt(data_set):
-        train_data = []
-        for data_point in data_set["train"].shuffle():
-            for i in range(len(data_point["conversations"]-1)):
+    def generate_and_tokenize_prompt(data_point):
+        data = []
+        for i in range(len(data_point["conversations"]-1)):
                 prompt = ""
                 for v in data_point["conversations"][:i+1]:
                     prompt += "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
@@ -202,12 +201,9 @@ def train(
                         prompt += '\n'
                 print('prompt', prompt)
                 tokenized_prompt = tokenize(prompt)
-                train_data.append(tokenized_prompt)
-
-        for v in data_point["conversations"]:
-            full_prompt = "ユーザー: " + v["ユーザー1"] + '\n' + "システム: " + v["ユーザー2"]
-            tokenized_full_prompt = tokenize(full_prompt)
-        return tokenized_full_prompt
+                data.append(tokenized_prompt)
+        return data
+    
 
     model = prepare_model_for_int8_training(model)
 
