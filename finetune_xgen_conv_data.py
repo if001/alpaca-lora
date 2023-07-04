@@ -201,9 +201,9 @@ def train(
                         prompt += "ユーザー: " + v2["ユーザー1"] + '\n' + "システム: " + v2["ユーザー2"]
                         if i != 0:
                             prompt += '\n'
-                    print('prompt', prompt)
-                    tokenized_prompt = tokenize(prompt)
-                    data.append(tokenized_prompt)
+                        print('prompt', prompt)
+                        tokenized_prompt = tokenize(prompt)
+                        data.append(tokenized_prompt)
         return data
     
 
