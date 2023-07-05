@@ -193,11 +193,13 @@ def train(
 
     def generate_and_tokenize_prompt(data_point):
         data = []
+        prefix = "以下はユーザーとアシスタントの会話です。アシスタントは親切で丁寧に詳細を回答します。\n\n"
         for i in range(len(data_point["conversations"])):                
                 for v in data_point["conversations"][:i+1]:
                     prompt = ""
                     for v2 in v:                        
-                        prompt += "ユーザー: " + v2["ユーザー1"] + '\n' + "システム: " + v2["ユーザー2"]
+                        # prompt += "ユーザー: " + v2["ユーザー1"] + '\n' + "システム: " + v2["ユーザー2"]
+                        prompt += "### ユーザー: " + v2["S"] + '\n' + "### システム: " + v2["U"]
                         if i != 0:
                             prompt += '\n'                        
                         tokenized_prompt = tokenize(prompt)
