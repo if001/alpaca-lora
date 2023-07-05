@@ -200,7 +200,7 @@ def train(
                     for v2 in v:                        
                         print('v2', v2)
                         # prompt += "ユーザー: " + v2["ユーザー1"] + '\n' + "システム: " + v2["ユーザー2"]
-                        prompt += "### ユーザー: " + v2["S"] + '\n' + "### システム: " + v2["U"]
+                        prompt += prefix + "### ユーザー: " + v2["S"] + '\n' + "### システム: " + v2["U"]
                         if i != 0:
                             prompt += '\n'                        
                         tokenized_prompt = tokenize(prompt)
