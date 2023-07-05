@@ -248,6 +248,7 @@ def train(
     model.print_trainable_parameters()  # Be more transparent about the % of trainable params.
 
     if val_set_size > 0:
+        print('data set len', len(data["train"]))
         train_val = data["train"].train_test_split(
             test_size=val_set_size, shuffle=True, seed=42
         )
@@ -255,7 +256,7 @@ def train(
         train_data = generate_and_tokenize_prompt(train_val["train"].shuffle())
         print("train_data", len(train_data))
         val_data = generate_and_tokenize_prompt(train_val["test"].shuffle())
-    
+        print("val_data", len(val_data))
     else:
         train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
         val_data = None
