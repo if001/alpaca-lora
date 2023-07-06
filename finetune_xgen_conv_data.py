@@ -196,13 +196,11 @@ def train(
         prefix = "以下はユーザーとアシスタントの会話です。アシスタントは親切で丁寧に詳細を回答します。\n\n"
         for i in range(len(data_point["conversations"])):                
                 for v in data_point["conversations"][:i+1]:
-                    prompt = ""
-                    for v2 in v:                        
-                        # print('v2', v2)
-                        # prompt += "ユーザー: " + v2["ユーザー1"] + '\n' + "システム: " + v2["ユーザー2"]
-                        prompt += prefix + "### ユーザー: " + v2["S"] + '\n' + "### システム: " + v2["U"]
-                        if i != 0:
-                            prompt += '\n'                        
+                    prompt = prefix 
+                    for v2 in v:                    
+                        prompt += "### ユーザー: \n" + v2["S"] + '\n\n' + "### アシスタント: \n" + v2["U"]
+                        if i != len(v)-1:
+                            prompt += '\n\n'
                         tokenized_prompt = tokenize(prompt)
                         data.append(tokenized_prompt)
         return data
