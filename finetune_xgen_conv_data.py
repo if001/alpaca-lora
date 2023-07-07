@@ -201,8 +201,8 @@ def train(
                     prompt += "### ユーザー: \n" + v["S"] + '\n\n' + "### アシスタント: \n" + v["U"] + eos_token
                     if j != i:
                         prompt += '\n\n'
-                    print(prompt)
-                    print('-'*20)
+                    #print(prompt)
+                    # print('-'*20)
                     tokenized_prompt = tokenize(prompt)
                     data.append(tokenized_prompt)
         return data
@@ -265,7 +265,7 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
-    exit(0)
+    
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
