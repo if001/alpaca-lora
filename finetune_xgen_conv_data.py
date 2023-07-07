@@ -251,9 +251,9 @@ def train(
             test_size=val_set_size, shuffle=True, seed=42
         )
         # print('train_val', train_val)
-        train_data = generate_and_tokenize_prompt(train_val["train"].shuffle())
+        train_data = generate_and_tokenize_prompt(train_val["train"].shuffle(), tokenizer.eos_token)
         print("train_data", len(train_data))
-        val_data = generate_and_tokenize_prompt(train_val["test"].shuffle())
+        val_data = generate_and_tokenize_prompt(train_val["test"].shuffle(), tokenizer.eos_token)
         print("val_data", len(val_data))
     else:
         train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
