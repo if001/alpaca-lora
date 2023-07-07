@@ -191,18 +191,18 @@ def train(
 
         return result
 
-    def generate_and_tokenize_prompt(data_point):
+    def generate_and_tokenize_prompt(data_point, eos_token):
         data = []
         prefix = "以下はユーザーとアシスタントの会話です。アシスタントは親切で丁寧に詳細を回答します。\n\n"
-        for i in range(len(data_point["conversations"])):                
-                for v in data_point["conversations"][:i+1]:
-                    prompt = prefix 
-                    for v2 in v:                    
-                        prompt += "### ユーザー: \n" + v2["S"] + '\n\n' + "### アシスタント: \n" + v2["U"]
-                        if i != len(v)-1:
-                            prompt += '\n\n'
-                        tokenized_prompt = tokenize(prompt)
-                        data.append(tokenized_prompt)
+        conversations = data_point["conversations"][0]
+        for i in range(len(conversations)):
+            prompt = prefix
+            for j, v in enumerate(conversations[:i+1]):
+                prompt += "### ユーザー: \n" + v["S"] + '\n\n' + "### アシスタント: \n" + v["U"] + eos_token
+                if j != i:
+                    prompt += '\n\n'
+                tokenized_prompt = tokenize(prompt)
+                data.append(tokenized_prompt)
         return data
     
 
