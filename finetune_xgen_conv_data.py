@@ -132,6 +132,7 @@ class DataCollatorForSeq2SeqDebug:
             pad_to_multiple_of=self.pad_to_multiple_of,
             return_tensors=return_tensors,
         )
+        
         print('input_ids: ', len(feature['input_ids']))
         print('labels: ', len(feature['labels']))
         # prepare decoder_input_ids
