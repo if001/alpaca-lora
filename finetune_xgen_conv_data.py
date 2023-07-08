@@ -142,7 +142,7 @@ class DataCollatorForSeq2SeqDebug:
         ):
             decoder_input_ids = self.model.prepare_decoder_input_ids_from_labels(labels=features["labels"])
             features["decoder_input_ids"] = decoder_input_ids
-        print('decoder_input_ids: ', len(feature['decoder_input_ids']))
+            print('decoder_input_ids: ', len(feature['decoder_input_ids']))
         return features
 
 
