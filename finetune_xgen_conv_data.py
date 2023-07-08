@@ -133,8 +133,8 @@ class DataCollatorForSeq2SeqDebug:
             return_tensors=return_tensors,
         )
         
-        print('input_ids: ', len(feature['input_ids']))
-        print('labels: ', len(feature['labels']))
+        print('batch input_ids: ', len(feature['input_ids']))
+        print('batch labels: ', len(feature['labels']))
         # prepare decoder_input_ids
         if (
             labels is not None
@@ -180,7 +180,8 @@ def train(
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca_ja",  # The prompt template to use, will default to alpaca.
 ):
-    transformers.logging.set_verbosity_info()
+    # transformers.logging.set_verbosity_info()
+    transformers.logging.set_verbosity_debug()
     if int(os.environ.get("LOCAL_RANK", 0)) == 0:
         print(
             f"Training Alpaca-LoRA model with params:\n"
@@ -400,7 +401,6 @@ def train(
             return_tensors="pt",
             padding=True, 
             label_pad_token_id=tokenizer.pad_token_id,
-            max_length=1024,
         ),
     )
     model.config.use_cache = False
