@@ -143,6 +143,7 @@ class DataCollatorForSeq2SeqDebug:
             decoder_input_ids = self.model.prepare_decoder_input_ids_from_labels(labels=features["labels"])
             features["decoder_input_ids"] = decoder_input_ids
             print('decoder_input_ids: ', len(feature['decoder_input_ids']))
+        print('-'*20)
         return features
 
 
@@ -393,7 +394,12 @@ def train(
         #    tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True, label_pad_token_id=tokenizer.pad_token_id
         #),
         data_collator=DataCollatorForSeq2SeqDebug(
-            tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True, label_pad_token_id=tokenizer.pad_token_id
+            tokenizer, 
+            pad_to_multiple_of=8,
+            return_tensors="pt",
+            padding=True, 
+            label_pad_token_id=tokenizer.pad_token_id,
+            max_length=1024,
         ),
     )
     model.config.use_cache = False
