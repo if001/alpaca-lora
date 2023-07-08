@@ -133,8 +133,7 @@ class DataCollatorForSeq2SeqDebug:
             return_tensors=return_tensors,
         )
         
-        print('batch input_ids: ', len(feature['input_ids']))
-        print('batch labels: ', len(feature['labels']))
+        print('batch input_ids, labels: ', len(feature['input_ids']), len(feature['labels']))        
         # prepare decoder_input_ids
         if (
             labels is not None
