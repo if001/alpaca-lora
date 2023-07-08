@@ -178,6 +178,7 @@ def train(
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca_ja",  # The prompt template to use, will default to alpaca.
 ):
+    transformers.logging.set_verbosity_info()
     if int(os.environ.get("LOCAL_RANK", 0)) == 0:
         print(
             f"Training Alpaca-LoRA model with params:\n"
