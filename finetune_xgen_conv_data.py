@@ -132,8 +132,8 @@ class DataCollatorForSeq2SeqDebug:
             pad_to_multiple_of=self.pad_to_multiple_of,
             return_tensors=return_tensors,
         )
-        print('input_ids: ', feature['input_ids'].shape)
-        print('labels: ', feature['labels'].shape)
+        print('input_ids: ', len(feature['input_ids']))
+        print('labels: ', len(feature['labels']))
         # prepare decoder_input_ids
         if (
             labels is not None
@@ -142,7 +142,7 @@ class DataCollatorForSeq2SeqDebug:
         ):
             decoder_input_ids = self.model.prepare_decoder_input_ids_from_labels(labels=features["labels"])
             features["decoder_input_ids"] = decoder_input_ids
-        print('decoder_input_ids: ', feature['decoder_input_ids'].shape)
+        print('decoder_input_ids: ', len(feature['decoder_input_ids']))
         return features
 
 
