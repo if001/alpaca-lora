@@ -125,9 +125,10 @@ class DataCollatorForSeq2SeqDebug:
                 else:
                     feature["labels"] = np.concatenate([remainder, feature["labels"]]).astype(np.int64)
 
+        print('-')
         for v in features:
             print(len(v['input_ids']), len(v['labels']))
-
+        print('====')
         features = self.tokenizer.pad(
             features,
             padding=self.padding,
@@ -287,7 +288,7 @@ def train(
             prompt,
             truncation=True,
             max_length=cutoff_len,
-            padding=False,
+            padding=True,
             return_tensors=None,
         )
         if (
