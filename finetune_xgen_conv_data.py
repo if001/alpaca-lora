@@ -178,6 +178,7 @@ def train(
     wandb_log_model: str = "",  # options: false | true
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca_ja",  # The prompt template to use, will default to alpaca.
+    max_steps: int = 4,
 ):
     # transformers.logging.set_verbosity_info()
     transformers.logging.set_verbosity_debug()
@@ -371,10 +372,11 @@ def train(
         train_dataset=train_data,
         eval_dataset=val_data,
         args=transformers.TrainingArguments(
-            per_device_train_batch_size=micro_batch_size,
-            gradient_accumulation_steps=gradient_accumulation_steps,
+            max_steps=4,
+            #per_device_train_batch_size=micro_batch_size,
+            #gradient_accumulation_steps=gradient_accumulation_steps,
             warmup_steps=100,
-            num_train_epochs=num_epochs,
+            #num_train_epochs=num_epochs,
             learning_rate=learning_rate,
             fp16=True,
             logging_steps=10,
@@ -396,7 +398,7 @@ def train(
         #),
         data_collator=DataCollatorForSeq2SeqDebug(
             tokenizer, 
-            pad_to_multiple_of=8,
+            pad_to_multiple_of=None,
             return_tensors="pt",
             padding=True, 
             label_pad_token_id=tokenizer.pad_token_id,
