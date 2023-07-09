@@ -131,7 +131,7 @@ class DataCollatorForSeq2SeqDebug:
         print('====')
         features = self.tokenizer.pad(
             features,
-            padding=self.padding,
+            padding='longest',
             max_length=self.max_length,
             pad_to_multiple_of=self.pad_to_multiple_of,
             return_tensors=return_tensors,
