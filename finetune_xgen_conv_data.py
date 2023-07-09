@@ -125,8 +125,8 @@ class DataCollatorForSeq2SeqDebug:
                 else:
                     feature["labels"] = np.concatenate([remainder, feature["labels"]]).astype(np.int64)
 
-        # for v in features:
-        #     print(len(v['input_ids']), len(v['labels']))
+        for v in features:
+            print(len(v['input_ids']), len(v['labels']))
 
         features = self.tokenizer.pad(
             features,
@@ -402,9 +402,9 @@ def train(
             report_to="wandb" if use_wandb else None,
             run_name=wandb_run_name if use_wandb else None,
         ),
-        #data_collator=transformers.DataCollatorForSeq2Seq(
-        #    tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True, label_pad_token_id=tokenizer.pad_token_id
-        #),
+        # data_collator=transformers.DataCollatorForSeq2Seq(
+        #     tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True, label_pad_token_id=tokenizer.pad_token_id
+        # ),
         data_collator=DataCollatorForSeq2SeqDebug(
             tokenizer, 
             pad_to_multiple_of=None,
