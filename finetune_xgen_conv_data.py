@@ -104,6 +104,11 @@ class DataCollatorForSeq2SeqDebug:
         labels = [feature["labels"] for feature in features] if "labels" in features[0].keys() else None
         # We have to pad the labels before calling `tokenizer.pad` as this method won't pad them and needs them of the
         # same length to return tensors.
+
+        for v in features:
+            print(len(v['input_ids']), len(v['labels']))
+        print('====000')
+
         if labels is not None:
             max_label_length = max(len(l) for l in labels)
             if self.pad_to_multiple_of is not None:
@@ -128,7 +133,7 @@ class DataCollatorForSeq2SeqDebug:
         print('-')
         for v in features:
             print(len(v['input_ids']), len(v['labels']))
-        print('====')
+        print('====111')
         features = self.tokenizer.pad(
             features,
             padding='longest',
