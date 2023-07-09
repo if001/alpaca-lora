@@ -125,8 +125,8 @@ class DataCollatorForSeq2SeqDebug:
                 else:
                     feature["labels"] = np.concatenate([remainder, feature["labels"]]).astype(np.int64)
 
-        for v in features:
-            print(len(v['input_ids']), len(v['labels']))
+        # for v in features:
+        #     print(len(v['input_ids']), len(v['labels']))
 
         features = self.tokenizer.pad(
             features,
@@ -135,8 +135,12 @@ class DataCollatorForSeq2SeqDebug:
             pad_to_multiple_of=self.pad_to_multiple_of,
             return_tensors=return_tensors,
         )
-        
-        print('batch input_ids, labels: ', len(features['input_ids']), len(features['labels']))        
+
+        #for x, y in zip(features['input_ids'], features['labels']):            
+        #    print('input_ids:', len(x), 'lables: ', len(y))
+        #print('-'*5)
+        #print('batch input_ids, labels: ', len(features['input_ids']), len(features['labels']))        
+
         # prepare decoder_input_ids
         if (
             labels is not None
@@ -146,6 +150,8 @@ class DataCollatorForSeq2SeqDebug:
             decoder_input_ids = self.model.prepare_decoder_input_ids_from_labels(labels=features["labels"])
             features["decoder_input_ids"] = decoder_input_ids
             print('decoder_input_ids: ', len(feature['decoder_input_ids']))
+
+        print('ids, labels: ', features['input_ids'].shape, features['labels'].shape)
         print('-'*20)
         return features
 
