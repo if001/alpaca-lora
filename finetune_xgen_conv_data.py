@@ -105,13 +105,14 @@ class DataCollatorForSeq2SeqDebug:
         # We have to pad the labels before calling `tokenizer.pad` as this method won't pad them and needs them of the
         # same length to return tensors.
 
-        for v in features:
-            print(len(v['input_ids']), len(v['labels']))
+        for v in features:            
+            print(len(v['input_ids']), len(v['labels']))            
             if len(v['input_ids']) != len(v['labels']):
+                print('?'*10)
                 print(self.tokenizer.decode(v['input_ids']))
                 print('-')                
                 print(self.tokenizer.decode(v['labels']))
-                print('-')                
+                print('?'*10)
         print('====000')
 
         if labels is not None:
@@ -289,7 +290,7 @@ def train(
     print('pad:', tokenizer.pad_token)
     print('eos:', tokenizer.eos_token)
     
-    tokenizer.padding_side = "left"  # Allow batched inference
+    # tokenizer.padding_side = "left"  # Allow batched inference
 
     def tokenize(prompt, add_eos_token=True):
         # there's probably a way to do this with the tokenizer settings
