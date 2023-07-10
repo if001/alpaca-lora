@@ -166,6 +166,9 @@ class DataCollatorForSeq2SeqDebug:
             print('decoder_input_ids: ', len(feature['decoder_input_ids']))
 
         print('ids, labels: ', features['input_ids'].shape, features['labels'].shape)
+        print(features['input_ids'])
+        print(features['labels'])
+        print(features['attention_mask'])
         print('-'*20)
         return features
 
