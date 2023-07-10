@@ -55,6 +55,8 @@ from transformers.utils import PaddingStrategy
 from transformers.tokenization_utils import PreTrainedTokenizerBase
 import numpy as np
 
+import copy
+
 @dataclass
 class DataCollatorForSeq2SeqDebug:
     """
@@ -99,13 +101,14 @@ class DataCollatorForSeq2SeqDebug:
     return_tensors: str = "pt"
 
     def __call__(self, features, return_tensors=None):
+        features = copy.deepcopy(features)
         if return_tensors is None:
             return_tensors = self.return_tensors
         labels = [feature["labels"] for feature in features] if "labels" in features[0].keys() else None
         # We have to pad the labels before calling `tokenizer.pad` as this method won't pad them and needs them of the
         # same length to return tensors.
 
-        for v in features:            
+        for v in features:
             print(len(v['input_ids']), len(v['labels']))            
             if len(v['input_ids']) != len(v['labels']):
                 print('?'*10)
