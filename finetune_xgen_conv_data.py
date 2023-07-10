@@ -13,7 +13,7 @@ from typing import List
 import fire
 import torch
 import transformers
-from datasets import load_dataset
+from datasets import load_dataset, Dataset
 
 """
 Unused imports:
@@ -101,21 +101,21 @@ class DataCollatorForSeq2SeqDebug:
     return_tensors: str = "pt"
 
     def __call__(self, features, return_tensors=None):
-        features = copy.deepcopy(features)
+        # features = copy.deepcopy(features)
         if return_tensors is None:
             return_tensors = self.return_tensors
         labels = [feature["labels"] for feature in features] if "labels" in features[0].keys() else None
         # We have to pad the labels before calling `tokenizer.pad` as this method won't pad them and needs them of the
         # same length to return tensors.
 
+        print('?'*50)
         for v in features:
             print(len(v['input_ids']), len(v['labels']))            
-            if len(v['input_ids']) != len(v['labels']):
-                print('?'*10)
+            if len(v['input_ids']) != len(v['labels']):            
                 print(self.tokenizer.decode(v['input_ids']))
                 print('-')                
                 print(self.tokenizer.decode(v['labels']))
-                print('?'*10)
+        print('?'*50)
         print('====000')
 
         if labels is not None:
@@ -395,7 +395,10 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
-    
+
+    train_data = Dataset.from_list(train_data)
+    val_data = Dataset.from_list(val_data)
+
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
