@@ -423,7 +423,7 @@ def train(
             report_to="wandb" if use_wandb else None,
             run_name=wandb_run_name if use_wandb else None,
         ),
-        data_collator=DataCollatorForSeq2SeqDebug(
+        data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer, 
             pad_to_multiple_of=8, 
             return_tensors="pt", 
