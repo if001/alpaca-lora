@@ -170,16 +170,16 @@ def train(
                                             # pad_token='<|endoftext|>'
                                             pad_token='<|pad|>'
                                         )
+    # tokenizer.padding_side = "left"  # Allow batched inference
+    tokenizer.padding_side = "right"  # Allow batched inference
 
     # tokenizer.pad_token_id = 0  # unk. we want this to be different from the eos token
     # print(tokenizer.all_special_tokens)
     # print(tokenizer.all_special_ids)
+    print('special token: ', tokenizer.special_tokens_map)
     print('pad:', tokenizer.pad_token)
     print('eos:', tokenizer.eos_token)
     
-    # tokenizer.padding_side = "left"  # Allow batched inference
-    tokenizer.padding_side = "right"  # Allow batched inference
-
     def tokenize(prompt, add_eos_token=True):
         # there's probably a way to do this with the tokenizer settings
         # but again, gotta move fast
@@ -217,7 +217,6 @@ def train(
                     data.append(tokenized_prompt)
         return data
     
-
     model = prepare_model_for_int8_training(model)
 
     config = LoraConfig(
