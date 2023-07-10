@@ -293,7 +293,7 @@ def train(
     print('pad:', tokenizer.pad_token)
     print('eos:', tokenizer.eos_token)
     
-    # tokenizer.padding_side = "left"  # Allow batched inference
+    tokenizer.padding_side = "left"  # Allow batched inference
 
     def tokenize(prompt, add_eos_token=True):
         # there's probably a way to do this with the tokenizer settings
@@ -386,11 +386,6 @@ def train(
         train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
         val_data = None
 
-    for v in train_data:    
-        if len(v['input_ids']) != len(v['labels']):
-            print('bad!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-    print('ok')
-
     if not ddp and torch.cuda.device_count() > 1:
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
@@ -425,16 +420,20 @@ def train(
             report_to="wandb" if use_wandb else None,
             run_name=wandb_run_name if use_wandb else None,
         ),
-        # data_collator=transformers.DataCollatorForSeq2Seq(
-        #     tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True, label_pad_token_id=tokenizer.pad_token_id
-        # ),
-        data_collator=DataCollatorForSeq2SeqDebug(
+        data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer, 
-            pad_to_multiple_of=8,
-            return_tensors="pt",
+            pad_to_multiple_of=8, 
+            return_tensors="pt", 
             padding=True, 
-            label_pad_token_id=tokenizer.pad_token_id,
+            label_pad_token_id=tokenizer.pad_token_id
         ),
+        # data_collator=DataCollatorForSeq2SeqDebug(
+        #     tokenizer, 
+        #     pad_to_multiple_of=8,
+        #     return_tensors="pt",
+        #     padding=True, 
+        #     label_pad_token_id=tokenizer.pad_token_id,
+        # ),
     )
 
     model.config.use_cache = False
