@@ -55,8 +55,6 @@ from transformers.utils import PaddingStrategy
 from transformers.tokenization_utils import PreTrainedTokenizerBase
 import numpy as np
 
-import copy
-
 @dataclass
 class DataCollatorForSeq2SeqDebug:
     """
@@ -283,8 +281,8 @@ def train(
     tokenizer = AutoTokenizer.from_pretrained(
                                             base_model, 
                                             trust_remote_code=True,
-                                            pad_token='<|endoftext|>'
-                                            #pad_token='<|pad|>'
+                                            # pad_token='<|endoftext|>'
+                                            pad_token='<|pad|>'
                                         )
 
     # tokenizer.pad_token_id = 0  # unk. we want this to be different from the eos token
@@ -293,7 +291,8 @@ def train(
     print('pad:', tokenizer.pad_token)
     print('eos:', tokenizer.eos_token)
     
-    tokenizer.padding_side = "left"  # Allow batched inference
+    # tokenizer.padding_side = "left"  # Allow batched inference
+    tokenizer.padding_side = "right"  # Allow batched inference
 
     def tokenize(prompt, add_eos_token=True):
         # there's probably a way to do this with the tokenizer settings
