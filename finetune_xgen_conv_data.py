@@ -107,6 +107,11 @@ class DataCollatorForSeq2SeqDebug:
 
         for v in features:
             print(len(v['input_ids']), len(v['labels']))
+            if len(v['input_ids']) != len(v['labels']):
+                print(self.tokenizer.decode(v['input_ids']))
+                print('-')                
+                print(self.tokenizer.decode(v['labels']))
+                print('-')                
         print('====000')
 
         if labels is not None:
@@ -133,11 +138,6 @@ class DataCollatorForSeq2SeqDebug:
         print('-')
         for v in features:
             print(len(v['input_ids']), len(v['labels']))
-            if len(v['input_ids']) != len(v['labels']):
-                print(self.tokenizer.decode(v['input_ids']))
-                print('-')                
-                print(self.tokenizer.decode(v['labels']))
-                print('-')                
         print('====111')
         features = self.tokenizer.pad(
             features,
@@ -382,6 +382,11 @@ def train(
         train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
         val_data = None
 
+    for v in train_data:    
+        if len(v['input_ids']) != len(v['labels']):
+            print('bad!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    print('ok')
+
     if not ddp and torch.cuda.device_count() > 1:
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
@@ -424,9 +429,7 @@ def train(
             label_pad_token_id=tokenizer.pad_token_id,
         ),
     )
-    a = trainer._get_train_sampler()
-    print(a)
-    exit(0)
+
     model.config.use_cache = False
 
     old_state_dict = model.state_dict
