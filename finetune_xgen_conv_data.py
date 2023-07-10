@@ -136,7 +136,7 @@ class DataCollatorForSeq2SeqDebug:
         print('====111')
         features = self.tokenizer.pad(
             features,
-            padding='longest',
+            padding=self.padding,
             max_length=self.max_length,
             pad_to_multiple_of=self.pad_to_multiple_of,
             return_tensors=return_tensors,
@@ -419,6 +419,9 @@ def train(
             label_pad_token_id=tokenizer.pad_token_id,
         ),
     )
+    a = trainer._get_train_sampler()
+    print(a)
+    exit(0)
     model.config.use_cache = False
 
     old_state_dict = model.state_dict
