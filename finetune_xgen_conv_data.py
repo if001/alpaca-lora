@@ -133,6 +133,11 @@ class DataCollatorForSeq2SeqDebug:
         print('-')
         for v in features:
             print(len(v['input_ids']), len(v['labels']))
+            if len(v['input_ids']) != len(v['labels']):
+                print(self.tokenizer.decode(v['input_ids']))
+                print('-')                
+                print(self.tokenizer.decode(v['labels']))
+                print('-')                
         print('====111')
         features = self.tokenizer.pad(
             features,
@@ -413,7 +418,7 @@ def train(
         # ),
         data_collator=DataCollatorForSeq2SeqDebug(
             tokenizer, 
-            pad_to_multiple_of=None,
+            pad_to_multiple_of=8,
             return_tensors="pt",
             padding=True, 
             label_pad_token_id=tokenizer.pad_token_id,
