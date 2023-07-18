@@ -173,6 +173,32 @@ class DataCollatorForSeq2SeqDebug:
         return features
 
 
+def np2tensor(x):
+    return torch.from_numpy(x).clone()
+
+def tensor2np(x):
+    return x.to('cpu').detach().numpy().copy()
+
+## todo huggingfaceのサンプルによると,train dataはblock sizeごとに並び替えてたのでここで並び替え
+def apply_group(ds, block_size = 256):
+    concatenated = { k: [] for k in ds[0].keys() }
+    for v in ds:
+        for k in ds[0].keys():
+            concatenated[k].extend(v[k])
+
+    total_length = len(concatenated[list(concatenated.keys())[0]])
+
+    if total_length >= block_size:
+        total_length = (total_length // block_size) * block_size
+
+
+    results = []
+    for i in range(0, total_length, block_size):
+        r = { k:  np2tensor(np.array(t[i: i + block_size])) for k,t in concatenated.items()}
+        r["labels"] = r["input_ids"].clone()
+        results.append(r)
+    return results
+
 def train(
     # model/data params
     base_model: str = "",  # the only required argument
@@ -336,7 +362,7 @@ def train(
                     # print('-'*20)
                     data.append(tokenized_prompt)
         return data
-    
+
     model = prepare_model_for_int8_training(model)
 
     config = LoraConfig(
@@ -383,8 +409,13 @@ def train(
         )
         # print('train_val', train_val)
         train_data = generate_and_tokenize_prompt(train_val["train"].shuffle())
-        print("train_data len", len(train_data))        
+        train_data = apply_group(train_data, block_size=cutoff_len)
+        train_data = Dataset.from_list(train_data)
+        print("train_data len", len(train_data))
+
         val_data = generate_and_tokenize_prompt(train_val["test"].shuffle())
+        val_data = apply_group(train_data, block_size=cutoff_len)
+        val_data = Dataset.from_list(val_data)        
         print("val_data", len(val_data))
         print("train_data", train_data[0])
     else:
@@ -395,9 +426,7 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
-
-    train_data = Dataset.from_list(train_data)
-    val_data = Dataset.from_list(val_data)
+    
 
     trainer = transformers.Trainer(
         model=model,
