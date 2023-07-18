@@ -361,6 +361,28 @@ def train(
                     # print(tokenized_prompt)
                     # print('-'*20)
                     data.append(tokenized_prompt)
+        data = Dataset.from_list(data)
+        return data
+
+    def generate_ant_tokenize_grouped(data_point):
+        data = []
+        prefix = "以下はユーザーとアシスタントの会話です。アシスタントは親切で丁寧に詳細を回答します。\n\n"
+        for conversations in data_point["conversations"]:
+            for i in range(len(conversations)):
+                prompt = prefix
+                for j, v in enumerate(conversations[:i+1]):
+                    prompt += "### ユーザー: \n" + v["S"] + '\n\n' + "### アシスタント: \n" + v["U"] + tokenizer.eos_token
+                    if j != i:
+                        prompt += '\n\n'
+                    # print(prompt)
+                    # print('-'*20)
+                    ## ここではtruncateしない
+                    tokenized_prompt = tokenizer(prompt, truncation=False, padding=False, return_tensors=None)
+                    # print(tokenized_prompt)
+                    # print('-'*20)
+                    data.append(tokenized_prompt)
+        data = apply_group(data, block_size=cutoff_len)
+        data = Dataset.from_list(data)
         return data
 
     model = prepare_model_for_int8_training(model)
@@ -408,14 +430,12 @@ def train(
             test_size=val_set_size, shuffle=True, seed=42
         )
         # print('train_val', train_val)
-        train_data = generate_and_tokenize_prompt(train_val["train"].shuffle())
-        train_data = apply_group(train_data, block_size=cutoff_len)
-        train_data = Dataset.from_list(train_data)
+        # train_data = generate_and_tokenize_prompt(train_val["train"].shuffle())        
+        train_data = generate_ant_tokenize_grouped(train_val["train"].shuffle())
         print("train_data len", len(train_data))
 
-        val_data = generate_and_tokenize_prompt(train_val["test"].shuffle())
-        val_data = apply_group(train_data, block_size=cutoff_len)
-        val_data = Dataset.from_list(val_data)        
+        # val_data = generate_and_tokenize_prompt(train_val["test"].shuffle())
+        val_data = generate_ant_tokenize_grouped(train_val["test"].shuffle())        
         print("val_data", len(val_data))
         print("train_data", train_data[0])
     else:
@@ -426,7 +446,6 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
-    
 
     trainer = transformers.Trainer(
         model=model,
