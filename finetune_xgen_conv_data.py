@@ -326,12 +326,14 @@ def train(
             for i in range(len(conversations)):
                 prompt = prefix
                 for j, v in enumerate(conversations[:i+1]):
-                    prompt += "### ユーザー: \n" + v["S"] + '\n\n' + "### アシスタント: \n" + v["U"]
+                    prompt += "### ユーザー: \n" + v["S"] + '\n\n' + "### アシスタント: \n" + v["U"] + tokenizer.eos_token
                     if j != i:
                         prompt += '\n\n'
-                    #print(prompt)
-                    # print('-'*20)
+                    print(prompt)
+                    print('-'*20)
                     tokenized_prompt = tokenize(prompt, add_eos_token=True)
+                    print(tokenized_prompt)
+                    print('-'*20)
                     data.append(tokenized_prompt)
         return data
     
@@ -414,7 +416,7 @@ def train(
             evaluation_strategy="steps" if val_set_size > 0 else "no",
             save_strategy="steps",
             eval_steps=200 if val_set_size > 0 else None,
-            save_steps=200,
+            save_steps=50,
             output_dir=output_dir,
             save_total_limit=3,
             load_best_model_at_end=True if val_set_size > 0 else False,
