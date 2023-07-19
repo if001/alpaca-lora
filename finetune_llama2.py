@@ -146,7 +146,7 @@ def train(
         os.environ["WANDB_LOG_MODEL"] = wandb_log_model
 
     
-    config = AutoConfig(base_model)
+    config = AutoConfig(pretrained_model_name_or_path =base_model)
     print(config)
     config.pretraining_tp = 1 
     model = AutoModelForCausalLM.from_pretrained(
