@@ -155,12 +155,18 @@ def train(
         #offload_state_dict = True,
         use_auth_token=True
     )
+    ## 13Bの場合、pretraining_tp=2
+    ## loraで学習させるときは1で良いのでは？
+    model.config.pretraining_tp=1
+
 
     tokenizer = AutoTokenizer.from_pretrained(base_model)
+    print(tokenizer.special_tokens_map)
+    print(tokenizer.eos_token, tokenizer.eos_token_id)
+    print(tokenizer.bos_token, tokenizer.bos_token_id)
+    print(tokenizer.pad_token, tokenizer.pad_token_id)
 
-    tokenizer.pad_token_id = (
-        0  # unk. we want this to be different from the eos token
-    )
+    tokenizer.pad_token_id = tokenizer.eos_token_id        
     tokenizer.padding_side = "left"  # Allow batched inference
 
     def tokenize(prompt, add_eos_token=True):
