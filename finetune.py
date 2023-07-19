@@ -153,6 +153,7 @@ def train(
         quantization_config=quantization_config,
         #offload_folder="offload",
         #offload_state_dict = True,
+        use_auth_token=True
     )
 
     tokenizer = LlamaTokenizer.from_pretrained(base_model)
