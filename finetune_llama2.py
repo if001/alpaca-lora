@@ -157,7 +157,7 @@ def train(
     )
     ## 13Bの場合、pretraining_tp=2
     ## loraで学習させるときは1で良いのでは？
-    model.config.pretraining_tp=1
+    # model.config.pretraining_tp=1
 
 
     tokenizer = AutoTokenizer.from_pretrained(base_model)
@@ -275,6 +275,9 @@ def train(
         model.is_parallelizable = True
         model.model_parallel = True
 
+    ## 13Bの場合、pretraining_tp=2
+    ## loraで学習させるときは1で良いのでは？
+    model.config.pretraining_tp=1
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
