@@ -150,7 +150,7 @@ def train(
     print(config)
     ## 13Bの場合、pretraining_tp=2
     ## loraで学習させるときは1で良いのでは？
-    config.pretraining_tp = 1 
+    config.pretraining_tp = 2
     model = AutoModelForCausalLM.from_pretrained(
         base_model,        
         #load_in_8bit=True,
