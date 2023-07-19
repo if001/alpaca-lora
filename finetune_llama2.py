@@ -25,7 +25,7 @@ import bitsandbytes as bnb
 #     "LlamaTokenizer" in transformers._import_structure["models.llama"]
 # ), "LLaMA is now in HuggingFace's main branch.\nPlease reinstall it: pip uninstall transformers && pip install git+https://github.com/huggingface/transformers.git"
 
-from transformers import LlamaForCausalLM, AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
 from transformers import BitsAndBytesConfig
 
 from peft import (
@@ -145,6 +145,10 @@ def train(
     if len(wandb_log_model) > 0:
         os.environ["WANDB_LOG_MODEL"] = wandb_log_model
 
+    
+    config = AutoConfig(base_model)
+    print(config)
+    config.pretraining_tp = 1 
     model = AutoModelForCausalLM.from_pretrained(
         base_model,        
         #load_in_8bit=True,
@@ -153,7 +157,8 @@ def train(
         quantization_config=quantization_config,
         #offload_folder="offload",
         #offload_state_dict = True,
-        use_auth_token=True
+        use_auth_token=True,
+        config=config
     )
     ## 13Bの場合、pretraining_tp=2
     ## loraで学習させるときは1で良いのでは？
@@ -275,9 +280,6 @@ def train(
         model.is_parallelizable = True
         model.model_parallel = True
 
-    ## 13Bの場合、pretraining_tp=2
-    ## loraで学習させるときは1で良いのでは？
-    model.config.pretraining_tp=1
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
