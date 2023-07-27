@@ -147,6 +147,7 @@ def train(
 
     
     config = AutoConfig.from_pretrained(base_model)
+    config.pretraining_tp = 1
     print(config)
     ## 13Bの場合、pretraining_tp=2
     ## loraで学習させるときは1で良いのでは？
