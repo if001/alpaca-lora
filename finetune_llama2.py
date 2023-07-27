@@ -170,7 +170,8 @@ def train(
     print(tokenizer.bos_token, tokenizer.bos_token_id)
     print(tokenizer.pad_token, tokenizer.pad_token_id)
 
-    tokenizer.pad_token_id = tokenizer.eos_token_id        
+    # tokenizer.pad_token_id = tokenizer.eos_token_id
+    tokenizer.pad_token_id = tokenizer.unk_token_id
     ## leftでいいの？？？
     tokenizer.padding_side = "left"
 
